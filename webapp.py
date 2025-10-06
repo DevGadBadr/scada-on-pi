@@ -14,6 +14,7 @@ from collections import defaultdict
 import re 
 from pathlib import Path
 from urllib.parse import quote
+import requests
 
 load_dotenv()
 
@@ -221,7 +222,16 @@ def to_excel_naive(dt: datetime, zone: ZoneInfo = ISTANBUL) -> datetime:
 
 @app.route("/")
 def main():
-    return render_template("index.html")
+    res = requests.get("https://devgadbadr.com/scadapiauth/auth")
+    try:
+        resJson = res.json()
+        print(resJson)
+        if resJson['authenticated']:
+            return render_template("index.html")
+        else:
+            return 'You App is Disabled, Contact Developer Gad Badr'
+    except:
+        return 'You App is Disabled, Contact Developer Gad Badr'
 
 @app.route("/downloadlog",methods=["POST"])
 def donwload_log():
