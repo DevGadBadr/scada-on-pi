@@ -1,0 +1,92 @@
+{
+  "server_list": {
+    "myserver": {
+      "comm": "tcp",
+      "host": "0.0.0.0",
+      "port": 5020,
+      "framer": "socket"
+    }
+  },
+  "device_list": {
+    "tpm04": {
+      "setup": {
+        "co size": 1,
+        "di size": 1,
+        "ir size": 1,
+        "hr size": 50000,
+        "shared blocks": true,
+        "type exception": true,
+        "defaults": {
+          "value": { "bits": 0, "uint16": 0, "uint32": 0, "float32": 0.0, "string": " " },
+          "action": { "bits": null, "uint16": null, "uint32": null, "float32": null, "string": null }
+        }
+      },
+      "invalid": [],
+      "write": [],
+      "bits": [],
+      "float32": [],
+      "string": [],
+      "uint16": [
+        { "addr": 4000, "value": 2304 },
+        { "addr": 4001, "value": 2299 },
+        { "addr": 4002, "value": 2302 },
+
+        { "addr": 4024, "value": 1234 },
+        { "addr": 4025, "value": 987 },
+        { "addr": 4026, "value": 1111 },
+        { "addr": 4027, "value": 123 },
+
+        { "addr": 4040, "value": 5000 },
+        { "addr": 4041, "value": 5000 },
+        { "addr": 4042, "value": 5000 },
+
+        { "addr": 4043, "value": 985 },
+        { "addr": 4044, "value": 990 },
+        { "addr": 4045, "value": 988 },
+        { "addr": 4046, "value": 988 },
+
+        { "addr": 4222, "value": 0 },
+        { "addr": 4223, "value": 0 },
+        { "addr": 4224, "value": 15 },
+        { "addr": 4225, "value": 16960 },
+
+        { "addr": 4238, "value": 0 },
+        { "addr": 4239, "value": 0 },
+        { "addr": 4240, "value": 0 },
+        { "addr": 4241, "value": 0 },
+
+        { "addr": 4254, "value": 0 },
+        { "addr": 4255, "value": 0 },
+        { "addr": 4256, "value": 0 },
+        { "addr": 4257, "value": 50000 },
+
+        { "addr": 4270, "value": 0 },
+        { "addr": 4271, "value": 0 },
+        { "addr": 4272, "value": 0 },
+        { "addr": 4273, "value": 0 },
+
+        { "addr": 4292, "value": 0 },
+        { "addr": 4293, "value": 0 },
+        { "addr": 4294, "value": 19 },
+        { "addr": 4295, "value": 4816 }
+      ],
+      "uint32": [
+        { "addr": [4140, 4141], "value": 250000 },
+        { "addr": [4142, 4143], "value": 190000 },
+        { "addr": [4144, 4145], "value": 210000 },
+        { "addr": [4146, 4147], "value": 650000 },
+
+        { "addr": [4162, 4163], "value": 50000 },
+        { "addr": [4164, 4165], "value": 30000 },
+        { "addr": [4166, 4167], "value": 20000 },
+        { "addr": [4168, 4169], "value": 100000 },
+
+        { "addr": [4184, 4185], "value": 260000 },
+        { "addr": [4186, 4187], "value": 200000 },
+        { "addr": [4188, 4189], "value": 220000 },
+        { "addr": [4190, 4191], "value": 680000 }
+      ],
+      "repeat": []
+    }
+  }
+}

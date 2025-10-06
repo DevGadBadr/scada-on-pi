@@ -1,0 +1,855 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCADA for TPM-04ES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Scada:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-color: white;
+      --text-color: black;
+      --scrollbar: rgb(213, 213, 213);
+      --scrollbarhover: #b4b4b4;
+      --names-color: #555;
+      --value-color: black;
+    }
+    .dark-mode{
+      --bg-color: #222;
+      --text-color: white;
+      --scrollbar: rgb(62, 62, 62);
+      --scrollbarhover: #5b5b5b;
+      --names-color: #aaa;
+      --value-color: white;
+    }
+    .dark-mode .generator{
+      filter: invert(1);
+    }
+    html{
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body{
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Scada', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    div{
+      box-sizing: border-box;
+    }
+    header{
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      min-height: 40px;
+      background: #222;
+      color: white;
+      font-weight: bold;
+      gap: 15px;
+    }
+    .body{
+      display: flex;
+      overflow: auto;
+      flex-direction: row;
+      scrollbar-color: var(--scrollbar) transparent; 
+    }
+    .body:hover{
+      scrollbar-color: var(--scrollbarhover) transparent;
+    }
+    .left{
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      flex-grow: 1;
+      overflow: auto;
+      scrollbar-color: var(--scrollbar) transparent; 
+      gap: 5px;
+      border-radius: 10px;
+      min-height: fit-content;
+      max-width: 50%;
+      /* justify-content: space-between; */
+    }
+    .left:hover{
+      scrollbar-color: var(--scrollbarhover) transparent; 
+    }
+    .right{
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      flex-grow: 1;
+      overflow: auto;
+      scrollbar-color: var(--scrollbar) transparent; 
+      gap: 1px;
+      border-radius: 10px;
+      max-width: 50%;
+      min-height: 400px;
+    }
+    .right:hover{
+      scrollbar-color: var(--scrollbarhover) transparent; 
+    }
+    .signal{
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .dark-mode .signal{
+      box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+    }
+    .signals-container{
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 5px;
+      flex-grow: 1;
+    }
+    .generator-container{
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      justify-content: center;
+      /* flex-grow: 1; */
+      flex-shrink: 0;
+    }
+    .generator{
+      width: 80px;
+      padding: 10px;
+    }
+    .options-container{
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      justify-content: center;
+      flex-grow: 1;
+      flex-shrink: 0;
+      margin-top: 10px;
+    }
+    .option{
+      width: 40px;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .induty {
+      filter: invert(47%) sepia(98%) saturate(402%) hue-rotate(84deg) brightness(92%) contrast(90%);
+    }
+    .dark-mode .induty {
+      filter: invert(47%) sepia(98%) saturate(402%) hue-rotate(120deg) brightness(92%) contrast(90%);
+    }
+
+    /* Reports UI */
+    .report-type{
+      background-color: var(--bg-color);
+      border: 1px solid #444;
+      color: var(--text-color);
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .report-type.selected{
+      background-color: var(--scrollbar);
+    }
+
+    .aligned{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contained{
+      border: 1px solid #444;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .circlehz{
+      border:10px solid #444;
+      padding:30px;
+      border-radius: 50%;
+      font-size: 30px;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 110px;
+      max-height: 110px;
+      min-width: 110px;
+      min-height: 110px;
+    }
+
+    .view-container > *{
+      flex-grow: 1;
+    }
+
+    .passive-values{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap:10px;
+    }
+
+    .kwvalues {
+      display: flex;
+
+    }
+
+
+    @media screen and (max-width: 1240px) {
+      .body{
+        flex-direction: column;
+        overflow: auto;
+      }
+      .generator{
+        padding: 10px;
+        width: 80px;
+      }
+      .left, .right{
+        max-width: 100%;
+      }
+      .view-container{
+        flex-direction: column;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+    <header class="header">
+      <div style="font-size: 15px">SCADA for TPM-04ES</div>
+      <div style="flex-grow: 1;"></div>
+      <div id="reports" style="width: 22px;height: 22px;">
+        <img id="reportsBtn" src="../static/reports.svg" style="cursor: pointer;display: flex;justify-content: center;align-items: center;width: 100%; height: 100%;filter: invert(1);" alt="">
+      </div>
+      <!-- <div id="settings" style="width: 22px;height: 22px;">
+        <img src="../static/settings.svg" style="cursor: pointer;display: flex;justify-content: center;align-items: center;width: 100%; height: 100%;filter: invert(1);" alt="">
+      </div>       -->
+      <div style="width: 22px;height: 22px;">
+        <img id="themeSwitch" src="../static/mode-dark.svg" style="cursor: pointer;display: flex;justify-content: center;align-items: center;width: 100%; height: 100%;filter: invert(1);" alt="">
+      </div>
+      <div style="font-size: 14px;" class="datetime">time</div>
+      <div></div>
+    </header>
+
+    <div class="body">
+      <div class="left">
+        <div style="display: flex;align-items: center;justify-content: center;">
+          <div style="display: flex;font-size: 16px;" id="online">TPM Meter is Offline</div>
+        </div>
+        
+        <div class="generator-container">
+          <div class="generator-div">
+            <img class="generator" id="generator1" src="../static/generator.svg" alt="Generator 1">
+            <div class="generator-label" style="display: flex;align-items: center;justify-content: center;">Generator 1</div>
+          </div>
+          <div class="generator-div">
+            <img class="generator" id="generator2" src="../static/generator.svg" alt="Generator 2">
+            <div class="generator-label" style="display: flex;align-items: center;justify-content: center;">Generator 2</div>
+          </div>
+          <div class="generator-div">
+            <img class="generator" id="generator3" src="../static/generator.svg" alt="Generator 3">
+            <div class="generator-label" style="display: flex;align-items: center;justify-content: center;">Generator 3</div>
+          </div>
+        </div>
+        <div class="settings" id="settingsDiv" style="margin-top: 10px;display: flex;flex-direction: column;gap: 10px;align-items: center;">
+          <form style="display: flex;flex-direction: column;gap: 10px;margin: 0;width: 100%;">
+            <div class="wifi" style="display: flex;gap: 20px;flex-direction: column;align-items: center;justify-content: center;border: 1px solid #444;padding: 10px;border-radius: 10px;width: 300px;width: 100%;">
+              <div style="color: var(--text-color);padding: 10px;text-align: center;">Raspberry Pi WiFi</div>
+              <div style="display: flex;gap: 10px;">
+                <div class="ssid" style="display: flex;gap: 10px;flex-direction: column;">
+                  <div class="label" style="color: var(--text-color);padding: 10px;">WiFi SSID</div>
+                  <div class="label" style="color: var(--text-color);padding: 10px;">WiFi Password</div>
+                </div>
+                <div class="password" style="display: flex;gap: 10px;flex-direction: column;">
+                  <input style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="text" class="input ssid-input" value="MyWiFiNetwork">
+                  <input style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="password" class="input password-input" value="MyWiFiPassword">
+                </div>
+              </div>
+              <div class="actions" style="display: flex;gap: 10px;">
+                <div class="actions" style="display: flex;gap: 10px;">
+                  <button style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Save</button>
+                </div>
+                <div style="display: flex;gap: 10px;">
+                  <button style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;" onclick="document.getElementById('settingsDiv').style.display='none'" type="button">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="reports">
+          <div class="report-box" id="reportsDiv" style="display: flex;gap: 10px;flex-direction: column;align-items: center;justify-content: center;border: 1px solid #444;padding: 10px;border-radius: 10px;width: 100%;margin-top: 10px;">
+            <div style="color: var(--text-color);padding: 10px;text-align: center;font-weight: bold;">Reports</div>
+
+            <div class="report-type-controls" style="display: flex;gap: 10px;flex-wrap: wrap;justify-content: center;">
+              <button type="button" class="report-type selected" data-type="day">Day</button>
+              <button type="button" class="report-type" data-type="month">Month</button>
+              <button type="button" class="report-type" data-type="year">Year</button>
+              <button type="button" class="report-type" data-type="custom">Custom</button>
+            </div>
+
+            <div id="report-pickers" style="display: flex;gap: 10px;flex-wrap: wrap;justify-content: center;align-items: center;">
+              <div id="picker-day" style="display: flex;gap: 10px;align-items: center;">
+                <div style="color: var(--text-color);">Select day</div>
+                <input id="report-day" type="date" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+              </div>
+
+              <div id="picker-month" style="display: none;gap: 10px;align-items: center;">
+                <div style="color: var(--text-color);">Select month</div>
+                <input id="report-month" type="month" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+              </div>
+
+              <div id="picker-year" style="display: none;gap: 10px;align-items: center;">
+                <div style="color: var(--text-color);">Select year</div>
+                <input id="report-year" type="number" min="2000" max="2100" step="1" style="width: 100px;background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+              </div>
+
+              <div id="picker-custom" style="display: none;gap: 10px;align-items: center;flex-wrap: wrap;">
+                <div style="color: var(--text-color);">From</div>
+                <input id="report-from" type="datetime-local" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+                <div style="color: var(--text-color);">To</div>
+                <input id="report-to" type="datetime-local" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+              </div>
+            </div>
+
+            <div class="report-actions" style="display: flex;gap: 10px;justify-content: center;">
+              <button id="report-download-pdf" type="button" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Download PDF</button>
+              <button id="report-download-excel" type="button" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Download EXCEL</button>
+            </div>
+          </div>
+        </div>
+        <div class="view" style="padding: 10px;border:1px solid #444;border-radius:10px">
+          <div class="view-container aligned">
+            <div class="line-values">
+              <div style="display: flex;gap:30px;padding:5px;align-items: center;justify-content: center">
+                <div class="aligned" style="flex-direction: column;gap:5px">
+                  <div style="color:var(--text-color);font-size:20px;">L1</div>
+                  <div class="contained" style="display: flex;flex-direction: column;gap:2px;align-items: center;justify-content: center;padding: 10px 20px;">
+                    <div class="voltage-l1" id="voltageL1" style="font-size:24px;">228</div>
+                    <div style="font-size: 20px;">v</div>
+                  </div>
+                  <div class="contained" id="currentL1" style="padding: 10px 20px;font-size:24px;">6.5</div>
+                </div>
+                <div class="aligned" style="flex-direction: column;gap:5px">
+                  <div style="color:var(--text-color);font-size:20px;">L2</div>
+                  <div class="contained" style="display: flex;flex-direction: column;gap:2px;align-items: center;justify-content: center;padding: 10px 20px;">
+                    <div class="voltage-l1" id="voltageL2" style="font-size:24px;">228</div>
+                    <div style="font-size: 20px;">v</div>
+                  </div>
+                  <div class="contained" id="currentL2" style="padding: 10px 20px;font-size:24px;">6.5</div>
+                </div>
+                <div class="aligned" style="flex-direction: column;gap:5px">
+                  <div style="color:var(--text-color);font-size:20px;">L3</div>
+                  <div class="contained" style="display: flex;flex-direction: column;gap:2px;align-items: center;justify-content: center;padding: 10px 20px;">
+                    <div class="voltage-l1" id="voltageL3" style="font-size:24px;">228</div>
+                    <div style="font-size: 20px;">v</div>
+                  </div>
+                  <div class="contained" id="currentL3" style="padding: 10px 30px;font-size:24px;">6.5</div>
+                </div>
+              </div>
+              <div>
+                <div></div>
+              </div>
+            </div>
+            <div class="passive-values">
+              <div class="circlehz">
+                <div id="freq">50</div><span style="font-size: 10px;">Hz</span>
+              </div>
+              <div style="display: flex;gap: 30px;" class="aligned">
+                <div class="kwvalues" class="aligned" style="display: flex;flex-direction: column;gap:5px;font-size:20px;">
+                  <div>kW</div>
+                  <div id="kwh"></div>
+                </div>
+                <div class="kwvalues" class="aligned" style="display: flex;flex-direction: column;gap:5px;font-size:20px;">
+                  <div>kVA</div>
+                  <div id="kva"></div>
+                </div>
+                <div class="kwvalues" class="aligned" style="display: flex;flex-direction: column;gap:5px;font-size:20px;">
+                  <div>PF</div>
+                  <div id="pf"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="view-footer"></div>
+        
+        </div>
+      </div>
+      
+      <div class="right">
+          <div class="signals-container" id="signals">
+            <!-- Signals Here -->
+          </div>
+      </div>
+
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+      // Initial Theme 
+      const theme = localStorage.getItem('theme')
+      if(theme){
+        if(theme==='dark-mode'){
+          applyTheme('dark-mode');
+        } else {
+          applyTheme('light-mode');
+        }
+      }
+      // End Initial Theme Setup
+
+      // Breaks
+      const breaks = ['L3 Voltage','Neutral Current']
+
+      // WebSocket Connection
+      try {
+        const socket = io("http://100.98.212.72:3000");
+        socket.on("connect", () => {
+        console.log("Connected to WebSocket server");
+        });
+        socket.on("disconnect", () => console.log("disconnected"));
+        socket.on("modbus-data", (payload) => {
+          const signalsElement = document.getElementById("signals");
+          console.log("Received Data");
+          const online = document.getElementById("online")
+          online.textContent = 'TPM Meter is Online'
+
+          const gen1State = payload['gen1']
+          const gen2State = payload['gen2']
+          const gen3State = payload['gen3']
+        
+          if(!gen1State){
+            const gen = document.getElementById('generator1')
+            gen.classList.add('induty')
+          }else{
+            const gen = document.getElementById('generator1')
+            gen.classList.remove('induty')
+          }
+
+          if(!gen2State){
+            const gen = document.getElementById('generator2')
+            gen.classList.add('induty')
+          }else{
+            const gen = document.getElementById('generator1')
+            gen.classList.remove('induty')
+          }
+
+          if(!gen3State){
+            const gen = document.getElementById('generator3')
+            gen.classList.add('induty')
+          }else{
+            const gen = document.getElementById('generator1')
+            gen.classList.remove('induty')
+          }
+
+          const voltageL1 = document.getElementById("voltageL1") 
+          const voltageL2 = document.getElementById("voltageL2") 
+          const voltageL3 = document.getElementById("voltageL3") 
+
+          voltageL1.innerText = payload["L1 Voltage"] || ""
+          voltageL2.innerText = payload["L2 Voltage"] || ""
+          voltageL3.innerText = payload["L2 Voltage"] || ""
+
+          const currentL1 = document.getElementById("currentL1") 
+          const currentL2 = document.getElementById("currentL2") 
+          const currentL3 = document.getElementById("currentL3") 
+
+          currentL1.textContent = payload["L1 Current"] || ""
+          currentL2.textContent = payload["L2 Current"] || ""
+          currentL3.textContent = payload["L3 Current"] || ""
+
+          const kwh = document.getElementById("kwh")
+          const kva = document.getElementById("kva")
+          const pf = document.getElementById("pf")
+
+          kwh.textContent = payload["Total Active Power"] || ""
+          kva.textContent = payload["Total Apparent Power"] || ""
+          pf.textContent = payload["Total Power Factor"] || ""
+
+          const freq = document.getElementById("freq") 
+
+          freq.textContent = payload["L1 Frequency"] || ""
+
+          const categories = {'Voltage':[],'Current':[],'Frequency':[],'Power Factor':[],"Active Power":[],'Reactive Power':[],'Apparent Power':[],'Energy':[]};
+          Object.keys(payload).forEach(key=>{
+            Object.keys(categories).forEach(cat=>{
+              if(key.includes(cat)){
+                categories[cat].push(key);
+              }
+            });
+          });
+          console.log(categories);
+          Object.entries(categories).forEach(([cat, keys]) => {
+            if(keys.length>0){
+              // Create Category Div
+              let catDiv = document.getElementById(cat);
+              if(!catDiv){
+                catDiv = document.createElement("div");
+                catDiv.id = cat;
+                catDiv.style.fontSize = "1.2em";
+                catDiv.style.fontWeight = "bold";
+                catDiv.style.marginTop = "10px";
+                catDiv.style.marginBottom = "5px";
+                catDiv.style.color = "var(--names-color)";
+                catDiv.textContent = cat;
+                signalsElement.appendChild(catDiv);
+              }
+            }
+          });
+          Object.entries(payload).forEach(([key, value]) => {
+            let signalDiv = document.getElementById(key);
+            if (!signalDiv) {
+              signalDiv = document.createElement("div");
+              signalDiv.id = key;
+              signalDiv.style.padding = "5px 10px";
+              signalDiv.classList.add("signal");
+              signalDiv.style.display = "flex";
+              signalDiv.style.flexDirection = "column";
+
+              // Name Div
+              const nameDiv = document.createElement("div");
+              nameDiv.textContent = key;
+              signalDiv.appendChild(nameDiv);
+
+              // Valueunit Div
+              const valueunitDiv = document.createElement("div");
+              valueunitDiv.id = key+"-valueunit";
+              valueunitDiv.style.fontSize = "1.2em";
+              valueunitDiv.style.display = "flex";
+              valueunitDiv.style.alignItems = "center";
+              valueunitDiv.style.justifyContent = "center";
+              valueunitDiv.style.gap = "5px";
+              signalDiv.appendChild(valueunitDiv);
+
+              // Value Div
+              const valueDiv = document.createElement("div");
+              valueDiv.style.fontWeight = "bold";
+              valueDiv.style.color = "var(--value-color)";
+              valueDiv.textContent = value;
+              valueunitDiv.appendChild(valueDiv);
+
+              // unit Div
+              let unit = "";
+              if(key.toLowerCase().includes("voltage")){
+                unit = " V";
+              } else if(key.toLowerCase().includes("current")){
+                unit = " A";
+              }else if(key.toLowerCase().includes("power factor")){
+                unit = "";
+              } else if(key.toLowerCase().includes("power")){
+                unit = " W";
+              } else if(key.toLowerCase().includes("frequency")){
+                unit = " Hz";
+              } else if(key.toLowerCase().includes("temperature")){
+                unit = " °C";
+              } else if(key.toLowerCase().includes("humidity")){
+                unit = " %";
+              }
+              if(unit){
+                const unitDiv = document.createElement("div");
+                unitDiv.textContent = unit;
+                unitDiv.style.marginLeft = "5px";
+                unitDiv.style.fontSize = "0.8em";
+                valueunitDiv.appendChild(unitDiv);
+              }
+
+              // Append to signals
+              const category = Object.keys(categories).find(cat => key.includes(cat));
+              if(!category) return;
+              const categoryDiv = document.getElementById(category);
+              categoryDiv.appendChild(signalDiv);
+
+            } else{
+              console.log("Updating...");
+              const valueunitDiv = document.getElementById(key+"-valueunit");
+              if(!valueunitDiv) return;
+              const valueDiv = valueunitDiv.children[0];
+              valueDiv.textContent = value;
+            }
+            
+          });
+        });
+      } catch (error) {
+        console.error("WebSocket connection error: ", error);
+      }      
+      // End WebSocket Connection
+
+      // Time
+      function updateTime(){
+        const dtElem = document.querySelector(".datetime");
+        const now = new Date();
+        const str = now.toLocaleDateString()+" "+now.toLocaleTimeString([],{hour: '2-digit', minute:'2-digit'});
+        dtElem.textContent = str;
+      }
+      setInterval(updateTime,1000);
+      updateTime();
+      // End Time
+      
+      // Theme Switch
+      const themeSwitch = document.getElementById("themeSwitch");
+      let darkMode = localStorage.getItem('theme') === 'dark-mode';
+      themeSwitch.addEventListener("click",()=>{
+        const theme = localStorage.getItem('theme');
+        darkMode = !darkMode;
+        if(darkMode){
+          applyTheme('dark-mode');
+        } else {
+          applyTheme('light-mode');
+        }
+      });
+      function applyTheme(theme){
+        const themeSwitch = document.getElementById("themeSwitch");
+        if(theme==='dark-mode'){
+          document.body.classList.add("dark-mode");
+          themeSwitch.style.borderColor = "white";
+          themeSwitch.setAttribute("src","../static/mode-light.svg");
+          localStorage.setItem('theme','dark-mode')
+        }else{
+          document.body.classList.remove("dark-mode");
+          themeSwitch.style.borderColor = "black";
+          themeSwitch.setAttribute("src","../static/mode-dark.svg");
+          localStorage.setItem('theme','light-mode')
+        }
+      }
+      // End Theme Switch
+
+      // Mobile Edits
+      if(window.innerWidth <= 600){
+        const timeDiv = document.querySelector(".datetime");
+        timeDiv.style.display = "none";
+      }
+      // End Mobile Edits
+
+      // Settings Toggle
+      // const settingsBtn = document.getElementById("settings");
+      const settingsDiv = document.getElementById("settingsDiv");
+      settingsDiv.style.display = "none";
+      // settingsBtn.addEventListener("click",()=>{
+      //   if(settingsDiv.style.display === "none"){
+      //     settingsDiv.style.display = "flex";
+      //   } else {
+      //     settingsDiv.style.display = "none";
+      //   }
+      // });
+      // End Settings Toggle
+
+      // Reports Toggle
+      const reportsBtn = document.getElementById("reportsBtn");
+      const reportsDiv = document.getElementById("reportsDiv");
+      reportsDiv.style.display = "none";
+      reportsBtn.addEventListener("click",()=>{
+        if(reportsDiv.style.display === "none"){
+          reportsDiv.style.display = "flex";
+        } else {
+          reportsDiv.style.display = "none";
+        }
+      });
+
+    
+      // Jump to Reports when clicking the header reports icon
+      (function(){
+        const reportsBtn = document.getElementById('reports');
+        const reportBox = document.querySelector('.report-box');
+        if(reportsBtn && reportBox){
+          reportsBtn.addEventListener('click', ()=>{
+            reportBox.scrollIntoView({behavior: 'smooth', block: 'start'});
+          });
+        }
+      })();
+
+      // Reports UI logic
+      (function initReports(){
+        const typeButtons = Array.from(document.querySelectorAll('.report-type'));
+        const pickers = {
+          day: document.getElementById('picker-day'),
+          month: document.getElementById('picker-month'),
+          year: document.getElementById('picker-year'),
+          custom: document.getElementById('picker-custom')
+        };
+        const inputDay = document.getElementById('report-day');
+        const inputMonth = document.getElementById('report-month');
+        const inputYear = document.getElementById('report-year');
+        const inputFrom = document.getElementById('report-from');
+        const inputTo = document.getElementById('report-to');
+        const dlBtnpdf = document.getElementById('report-download-pdf');
+        const dlBtnexcel = document.getElementById('report-download-excel');
+
+        // Set sensible defaults
+        const now = new Date();
+        inputDay.value = formatDateInput(now);
+        inputMonth.value = formatMonthInput(now);
+        inputYear.value = String(now.getFullYear());
+        const startOfHour = new Date(now);
+        startOfHour.setMinutes(0,0,0);
+        inputFrom.value = formatDateTimeLocal(startOfHour);
+        inputTo.value = formatDateTimeLocal(now);
+
+        typeButtons.forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            const t = btn.dataset.type;
+            // toggle selected
+            typeButtons.forEach(b=>b.classList.remove('selected'));
+            btn.classList.add('selected');
+            // switch pickers
+            Object.keys(pickers).forEach(k=>{
+              pickers[k].style.display = (k===t)?'flex':'none';
+            })
+          });
+        });
+
+      dlBtnpdf.addEventListener('click', async () => {
+        const selectedType =
+          (typeButtons.find(b => b.classList.contains('selected'))?.dataset.type) || 'day';
+        const { from, to } = computeRange(selectedType, {
+          day: inputDay.value,
+          month: inputMonth.value,
+          year: inputYear.value,
+          from: inputFrom.value,
+          to: inputTo.value
+        });
+
+        console.log('[REPORT] type=', selectedType, 'from=', from.toISOString(), 'to=', to.toISOString());
+
+        try {
+          const res = await fetch("/downloadlog", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: from.toISOString(),
+              to: to.toISOString(),
+              file: "pdf"
+            })
+          });
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+          const disp = res.headers.get("Content-Disposition") || "";
+          const match = /filename\*?=(?:UTF-8'')?["']?([^"';]+)["']?/i.exec(disp);
+          const suggestedName = match ? decodeURIComponent(match[1]) : `report_${Date.now()}.pdf`;
+
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = suggestedName;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error(err);
+          console.log("Error exporting PDF!");
+        }
+      });
+
+      dlBtnexcel.addEventListener('click', async () => {
+        const selectedType =
+          (typeButtons.find(b => b.classList.contains('selected'))?.dataset.type) || 'day';
+        const { from, to } = computeRange(selectedType, {
+          day: inputDay.value,
+          month: inputMonth.value,
+          year: inputYear.value,
+          from: inputFrom.value,
+          to: inputTo.value
+        });
+
+        console.log('[REPORT] type=', selectedType, 'from=', from.toISOString(), 'to=', to.toISOString());
+
+        try {
+          const res = await fetch("/downloadlog", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: from.toISOString(),
+              to: to.toISOString(),
+              file: "excel"
+            })
+          });
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+          const disp = res.headers.get("Content-Disposition") || "";
+          const match = /filename\*?=(?:UTF-8'')?["']?([^"';]+)["']?/i.exec(disp);
+          const suggestedName = match ? decodeURIComponent(match[1]) : `report_${Date.now()}.xlsx`;
+
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = suggestedName;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error(err);
+          console.log("Error exporting Excel!");
+        }
+      });
+
+
+        function computeRange(type, values){
+          switch(type){
+            case 'day':{
+              // values.day: YYYY-MM-DD
+              const start = new Date(values.day + 'T00:00:00');
+              const end = new Date(values.day + 'T23:59:59.999');
+              return {from: start, to: end};
+            }
+            case 'month':{
+              // values.month: YYYY-MM
+              const [y,m] = values.month.split('-').map(Number);
+              const start = new Date(y, m-1, 1, 0,0,0,0);
+              const end = new Date(y, m, 0, 23,59,59,999); // last day prev month index
+              return {from: start, to: end};
+            }
+            case 'year':{
+              const y = Number(values.year);
+              const start = new Date(y, 0, 1, 0,0,0,0);
+              const end = new Date(y, 11, 31, 23,59,59,999);
+              return {from: start, to: end};
+            }
+            case 'custom':{
+              const start = values.from ? new Date(values.from) : new Date();
+              const end = values.to ? new Date(values.to) : new Date();
+              return {from: start, to: end};
+            }
+            default:{
+              const now = new Date();
+              return {from: now, to: now};
+            }
+          }
+        }
+
+        function pad(n){return n.toString().padStart(2,'0');}
+        function formatDateInput(d){
+          return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+        }
+        function formatMonthInput(d){
+          return `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+        }
+        function formatDateTimeLocal(d){
+          const yyyy = d.getFullYear();
+          const mm = pad(d.getMonth()+1);
+          const dd = pad(d.getDate());
+          const hh = pad(d.getHours());
+          const mi = pad(d.getMinutes());
+          return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+        }
+      })();
+      // End
+
+      
+
+    </script>
+</body>
+</html>
