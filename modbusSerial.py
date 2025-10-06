@@ -36,8 +36,7 @@ async def getSignals() -> list:
     await connection.close()
     return rows
 
-async def connectClient(port: str, baudrate: int = 9600, bytesize: int = 8, 
-                        parity: str = 'N', stopbits: int = 1, slave: int = 1) -> AsyncModbusSerialClient:
+async def connectClient(storeConnection:asyncpg.Connection) -> AsyncModbusSerialClient:
     """
     Connect to Modbus device via serial/RS485
     Common RS485 parameters:
@@ -48,16 +47,34 @@ async def connectClient(port: str, baudrate: int = 9600, bytesize: int = 8,
     - stopbits: 1 or 2
     - slave: Modbus slave ID (check your device, typically 1)
     """
+    settings = await storeConnection.fetch("select * from settings")
+
+    port = settings[0]['port']
+    baudrate = settings[0]['baudrate']
+    bytesize = settings[0]['bytesize']
+    parity = settings[0]['parity']
+    stopbits = settings[0]['stopbits']
+    timeout = settings[0]['timeout']
+    SLAVE_ID = settings[0]['slaveid']
+
+    print(f"Serial Port Settings:")
+    print(f"  Port: {port}")
+    print(f"  Baudrate: {baudrate}")
+    print(f"  Bytesize: {bytesize}")
+    print(f"  Parity: {parity}")
+    print(f"  Stopbits: {stopbits}")
+    print(f"  Timeout: {timeout}")
+
     client = AsyncModbusSerialClient(
         port=port,
         baudrate=baudrate,
         bytesize=bytesize,
         parity=parity,
         stopbits=stopbits,
-        timeout=3
+        timeout=timeout
     )
     await client.connect()
-    return client
+    return client,SLAVE_ID
 
 def normalizeVoltage(v):
     VT = 1
@@ -74,28 +91,22 @@ def normalizePowerFactor(pf):
     return str(round(pf*0.001, 2))
 
 async def main():
-    # Configure serial port - adjust these parameters based on your device specs
-    SERIAL_PORT = '/dev/ttyUSB0'  # Change to /dev/ttyUSB1 if needed
-    BAUDRATE = 9600  # Common values: 9600, 19200, 38400, 115200
-    SLAVE_ID = 1  # Modbus slave address - check your device documentation
-    
-    client = await connectClient(
-        port=SERIAL_PORT,
-        baudrate=BAUDRATE,
-        slave=SLAVE_ID
+
+    storeConnection: asyncpg.Connection = await asyncpg.connect(
+        host="localhost",
+        port="5432",
+        database=os.getenv("DB_NAME_LOCAL"),
+        password=os.getenv("DB_PASSWORD_LOCAL"),
+        user="devgadbadr"
     )
+    
+    client,SLAVE_ID = await connectClient(storeConnection)
     print("Client connection is "+str(client.connected))
     signalList = await getSignals()
     print(f"Total {len(signalList)} signals found")
     signalValues = {}
     sio.connect(SERVERURL)
-    storeConnection: asyncpg.Connection = await asyncpg.connect(
-        host="localhost",
-        port="5432",
-        database="tpmdb",
-        password="scadaonpi",
-        user="devgadbadr"
-    )
+
     # Set them as input with internal pull-up resistors
     pins = [17, 27, 22]
     GPIO.setmode(GPIO.BCM)

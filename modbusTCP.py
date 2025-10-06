@@ -8,7 +8,7 @@ import pytz
 from datetime import datetime
 import json
 import RPi.GPIO as GPIO
-
+from genhoursfunc import calculate_generator_hours
 
 load_dotenv()
 
@@ -82,9 +82,9 @@ async def main():
         states = {p: GPIO.input(p) for p in pins}
         print(states)
 
-        gen1CurrentState = states[17] 
-        gen2CurrentState = 0
-        gen3CurrentState = states[22]
+        gen1CurrentState = states[17] #states[17] 
+        gen2CurrentState = states[27] #states[27] 
+        gen3CurrentState = 0 #states[22] 
         
         signalValues['gen1'] = gen1CurrentState
         signalValues['gen2'] = gen2CurrentState
@@ -129,6 +129,20 @@ async def main():
         else: #gen 2 on its gpio is 0
             if not gen3state:
                 await storeConnection.execute("insert into gens (status,timestamp,gen,state) values ($1,$2,$3,$4)",'gen 3 on',ts,'gen3',True)
+
+
+        query = """
+        select (timestamp,gen,state) from gens 
+        """
+        async with storeConnection.transaction():
+            genrows = await storeConnection.fetch(query)
+        fedRows = []
+        for genrow in genrows:
+            fedRows.append({"timestamp":genrow[0][0],"gen":genrow[0][1],"state":genrow[0][2]})
+
+        genehours = calculate_generator_hours(fedRows)
+        print(genehours)
+        signalValues['genhours'] = genehours
 
         # Read L1, L2, L3 Voltage
         rr = await client.read_holding_registers(4000,3)

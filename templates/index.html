@@ -230,9 +230,9 @@
       <div id="reports" style="width: 22px;height: 22px;">
         <img id="reportsBtn" src="../static/reports.svg" style="cursor: pointer;display: flex;justify-content: center;align-items: center;width: 100%; height: 100%;filter: invert(1);" alt="">
       </div>
-      <!-- <div id="settings" style="width: 22px;height: 22px;">
+      <div id="settings" style="width: 22px;height: 22px;">
         <img src="../static/settings.svg" style="cursor: pointer;display: flex;justify-content: center;align-items: center;width: 100%; height: 100%;filter: invert(1);" alt="">
-      </div>       -->
+      </div>      
       <div style="width: 22px;height: 22px;">
         <img id="themeSwitch" src="../static/mode-dark.svg" style="cursor: pointer;display: flex;justify-content: center;align-items: center;width: 100%; height: 100%;filter: invert(1);" alt="">
       </div>
@@ -250,84 +250,21 @@
           <div class="generator-div">
             <img class="generator" id="generator1" src="../static/generator.svg" alt="Generator 1">
             <div class="generator-label" style="display: flex;align-items: center;justify-content: center;">Generator 1</div>
+            <div class="gen-run-hours aligned" id="gen1hours"></div>
           </div>
           <div class="generator-div">
             <img class="generator" id="generator2" src="../static/generator.svg" alt="Generator 2">
             <div class="generator-label" style="display: flex;align-items: center;justify-content: center;">Generator 2</div>
+            <div class="gen-run-hours aligned" id="gen2hours"></div>
           </div>
           <div class="generator-div">
             <img class="generator" id="generator3" src="../static/generator.svg" alt="Generator 3">
             <div class="generator-label" style="display: flex;align-items: center;justify-content: center;">Generator 3</div>
-          </div>
-        </div>
-        <div class="settings" id="settingsDiv" style="margin-top: 10px;display: flex;flex-direction: column;gap: 10px;align-items: center;">
-          <form style="display: flex;flex-direction: column;gap: 10px;margin: 0;width: 100%;">
-            <div class="wifi" style="display: flex;gap: 20px;flex-direction: column;align-items: center;justify-content: center;border: 1px solid #444;padding: 10px;border-radius: 10px;width: 300px;width: 100%;">
-              <div style="color: var(--text-color);padding: 10px;text-align: center;">Raspberry Pi WiFi</div>
-              <div style="display: flex;gap: 10px;">
-                <div class="ssid" style="display: flex;gap: 10px;flex-direction: column;">
-                  <div class="label" style="color: var(--text-color);padding: 10px;">WiFi SSID</div>
-                  <div class="label" style="color: var(--text-color);padding: 10px;">WiFi Password</div>
-                </div>
-                <div class="password" style="display: flex;gap: 10px;flex-direction: column;">
-                  <input style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="text" class="input ssid-input" value="MyWiFiNetwork">
-                  <input style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="password" class="input password-input" value="MyWiFiPassword">
-                </div>
-              </div>
-              <div class="actions" style="display: flex;gap: 10px;">
-                <div class="actions" style="display: flex;gap: 10px;">
-                  <button style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Save</button>
-                </div>
-                <div style="display: flex;gap: 10px;">
-                  <button style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;" onclick="document.getElementById('settingsDiv').style.display='none'" type="button">Cancel</button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="reports">
-          <div class="report-box" id="reportsDiv" style="display: flex;gap: 10px;flex-direction: column;align-items: center;justify-content: center;border: 1px solid #444;padding: 10px;border-radius: 10px;width: 100%;margin-top: 10px;">
-            <div style="color: var(--text-color);padding: 10px;text-align: center;font-weight: bold;">Reports</div>
-
-            <div class="report-type-controls" style="display: flex;gap: 10px;flex-wrap: wrap;justify-content: center;">
-              <button type="button" class="report-type selected" data-type="day">Day</button>
-              <button type="button" class="report-type" data-type="month">Month</button>
-              <button type="button" class="report-type" data-type="year">Year</button>
-              <button type="button" class="report-type" data-type="custom">Custom</button>
-            </div>
-
-            <div id="report-pickers" style="display: flex;gap: 10px;flex-wrap: wrap;justify-content: center;align-items: center;">
-              <div id="picker-day" style="display: flex;gap: 10px;align-items: center;">
-                <div style="color: var(--text-color);">Select day</div>
-                <input id="report-day" type="date" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
-              </div>
-
-              <div id="picker-month" style="display: none;gap: 10px;align-items: center;">
-                <div style="color: var(--text-color);">Select month</div>
-                <input id="report-month" type="month" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
-              </div>
-
-              <div id="picker-year" style="display: none;gap: 10px;align-items: center;">
-                <div style="color: var(--text-color);">Select year</div>
-                <input id="report-year" type="number" min="2000" max="2100" step="1" style="width: 100px;background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
-              </div>
-
-              <div id="picker-custom" style="display: none;gap: 10px;align-items: center;flex-wrap: wrap;">
-                <div style="color: var(--text-color);">From</div>
-                <input id="report-from" type="datetime-local" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
-                <div style="color: var(--text-color);">To</div>
-                <input id="report-to" type="datetime-local" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
-              </div>
-            </div>
-
-            <div class="report-actions" style="display: flex;gap: 10px;justify-content: center;">
-              <button id="report-download-pdf" type="button" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Download PDF</button>
-              <button id="report-download-excel" type="button" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Download EXCEL</button>
-            </div>
+            <div class="gen-run-hours aligned" id="gen3hours"></div>
           </div>
         </div>
         <div class="view" style="padding: 10px;border:1px solid #444;border-radius:10px">
-          <div class="view-container aligned">
+          <div  class="view-container aligned">
             <div class="line-values">
               <div style="display: flex;gap:30px;padding:5px;align-items: center;justify-content: center">
                 <div class="aligned" style="flex-direction: column;gap:5px">
@@ -380,8 +317,118 @@
             </div>
           </div>
           <div class="view-footer"></div>
-        
         </div>
+        <div class="settings" id="settingsDiv" style="margin-top: 10px;display: flex;flex-direction: column;gap: 10px;align-items: center;">
+          <form style="display: flex;flex-direction: column;gap: 10px;margin: 0;width: 100%;">
+            <div class="wifi" style="display: flex;gap: 20px;flex-direction: column;align-items: center;justify-content: center;border: 1px solid #444;padding: 10px;border-radius: 10px;width: 300px;width: 100%;">
+              <div style="color: var(--text-color);padding: 10px;text-align: center;">Raspberry Pi WiFi</div>
+              <div style="display: flex;gap: 10px;">
+                <div class="ssid" style="display: flex;gap: 10px;flex-direction: column;">
+                  <div class="label" style="color: var(--text-color);padding: 10px;">WiFi SSID</div>
+                  <div class="label" style="color: var(--text-color);padding: 10px;">WiFi Password</div>
+                </div>
+                <div class="password" style="display: flex;gap: 10px;flex-direction: column;">
+                  <input style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="text" class="input ssid-input" value="MyWiFiNetwork">
+                  <input style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="password" class="input password-input" value="MyWiFiPassword">
+                </div>
+              </div>
+              <div class="actions" style="display: flex;gap: 10px;">
+                <div class="actions" style="display: flex;gap: 10px;">
+                  <button style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Save</button>
+                </div>
+                <div style="display: flex;gap: 10px;">
+                  <button style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;" onclick="cancelFunc()" type="button">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <form id="serialDiv" style="display: flex;width: 100%;margin:0">
+          <div class="serial contained" style="display: flex;flex-direction: column;align-items: center;justify-content: center;width: 100%;flex-grow: 1;">
+            <div style="display: flex;flex-direction: row;">
+              <div class="" style="display: flex;flex-direction: column;gap:5px">
+                <div class="label" style="color: var(--text-color);padding: 10px;">Port</div>
+                <div class="label" style="color: var(--text-color);padding: 10px;">Baud Rate</div>
+                <div class="label" style="color: var(--text-color);padding: 10px;">Slave ID</div>
+                <div class="label" style="color: var(--text-color);padding: 10px;">Byte Size</div>
+                <div class="label" style="color: var(--text-color);padding: 10px;">Parity</div>
+                <div class="label" style="color: var(--text-color);padding: 10px;">Stop Bits</div>
+                <div class="label" style="color: var(--text-color);padding: 10px;">Timeout</div>
+              </div>
+              <div style="display: flex;flex-direction: column;gap:5px">
+                <select name="port" id="port" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;">
+                  <option value="/dev/ttyUSB0">/dev/ttyUSB0</option>
+                  <option value="/dev/ttyUSB1">/dev/ttyUSB1</option>
+                </select>
+                <select name="baudrate" id="baudrate" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;">
+                  <option value="9600">9600</option>
+                  <option value="19200">19200</option>
+                  <option value="38400">38400</option>
+                  <option value="115200">115200</option>
+                </select>
+                <input name="slaveid" id="slaveid" style="text-align: center;background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="number" class="" value="1">
+                <input name='bytesize' id="bytesize" style="text-align: center;background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="number" class="" value="8">
+                <select name="parity" id="parity" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;">
+                  <option value="N">None</option>
+                  <option value="E">Even</option>
+                  <option value="O">Odd</option>
+                </select>
+                <input id="stopbits" style="text-align: center;background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="number" class="" value="1">
+                <input id="timeout" style="text-align: center;background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px;" type="number" class="" value="5">
+              </div>
+            </div>
+            <div class="actions" style="display: flex;gap: 10px;">
+              <div class="actions" style="display: flex;gap: 10px;">
+                <button type="button" id="saveSerial" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Save</button>
+              </div>
+              <div style="display: flex;gap: 10px;">
+                <button type="button" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;" onclick="cancelFunc()">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="reports">
+          <div class="report-box" id="reportsDiv" style="display: flex;gap: 10px;flex-direction: column;align-items: center;justify-content: center;border: 1px solid #444;padding: 10px;border-radius: 10px;width: 100%;">
+            <div style="color: var(--text-color);padding: 10px;text-align: center;font-weight: bold;">Reports</div>
+
+            <div class="report-type-controls" style="display: flex;gap: 10px;flex-wrap: wrap;justify-content: center;">
+              <button type="button" class="report-type selected" data-type="day">Day</button>
+              <button type="button" class="report-type" data-type="month">Month</button>
+              <button type="button" class="report-type" data-type="year">Year</button>
+              <button type="button" class="report-type" data-type="custom">Custom</button>
+            </div>
+
+            <div id="report-pickers" style="display: flex;gap: 10px;flex-wrap: wrap;justify-content: center;align-items: center;">
+              <div id="picker-day" style="display: flex;gap: 10px;align-items: center;">
+                <div style="color: var(--text-color);">Select day</div>
+                <input id="report-day" type="date" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+              </div>
+
+              <div id="picker-month" style="display: none;gap: 10px;align-items: center;">
+                <div style="color: var(--text-color);">Select month</div>
+                <input id="report-month" type="month" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+              </div>
+
+              <div id="picker-year" style="display: none;gap: 10px;align-items: center;">
+                <div style="color: var(--text-color);">Select year</div>
+                <input id="report-year" type="number" min="2000" max="2100" step="1" style="width: 100px;background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+              </div>
+
+              <div id="picker-custom" style="display: none;gap: 10px;align-items: center;flex-wrap: wrap;">
+                <div style="color: var(--text-color);">From</div>
+                <input id="report-from" type="datetime-local" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+                <div style="color: var(--text-color);">To</div>
+                <input id="report-to" type="datetime-local" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 6px;">
+              </div>
+            </div>
+
+            <div class="report-actions" style="display: flex;gap: 10px;justify-content: center;">
+              <button id="report-download-pdf" type="button" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Download PDF</button>
+              <button id="report-download-excel" type="button" style="background-color: var(--bg-color);border: 1px solid #444;color: var(--text-color);padding: 10px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;border-radius: 5px;cursor: pointer;">Download EXCEL</button>
+            </div>
+          </div>
+        </div>
+       
       </div>
       
       <div class="right">
@@ -421,6 +468,16 @@
           const online = document.getElementById("online")
           online.textContent = 'TPM Meter is Online'
 
+          const genhours = payload['genhours']
+
+          const gen1hours = document.getElementById("gen1hours")
+          const gen2hours = document.getElementById("gen2hours")
+          const gen3hours = document.getElementById("gen3hours")
+
+          gen1hours.innerText = genhours['Generator 1'] + " Hr" || ""
+          gen2hours.innerText = genhours['Generator 2'] + " Hr" || ""
+          gen3hours.innerText = genhours['Generator 3'] + " Hr" || ""
+
           const gen1State = payload['gen1']
           const gen2State = payload['gen2']
           const gen3State = payload['gen3']
@@ -439,7 +496,7 @@
             const gen = document.getElementById('generator2')
             gen.classList.add('induty')
           }else{
-            const gen = document.getElementById('generator1')
+            const gen = document.getElementById('generator2')
             gen.classList.remove('induty')
           }
 
@@ -447,7 +504,7 @@
             const gen = document.getElementById('generator3')
             gen.classList.add('induty')
           }else{
-            const gen = document.getElementById('generator1')
+            const gen = document.getElementById('generator3')
             gen.classList.remove('induty')
           }
 
@@ -621,6 +678,51 @@
       }
       // End Theme Switch
 
+      async function getsettings() {
+        try {
+          const res = await fetch("/getsettings", { method: "GET" });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const { settings } = await res.json();
+          if (!settings) return;
+
+          // helpers
+          const setInput = (id, v) => {
+            const el = document.getElementById(id);
+            if (el) el.value = v ?? "";
+          };
+
+          const setSelect = (id, v, labelIfMissing) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const val = String(v);
+            // if option exists, select it; else add it then select
+            const has = Array.from(el.options).some(o => o.value == val);
+            if (!has) {
+              const opt = document.createElement("option");
+              opt.value = val;
+              opt.textContent = labelIfMissing ?? val;
+              el.appendChild(opt);
+            }
+            el.value = val;
+          };
+
+          // apply
+          setSelect("port", settings.port);              // e.g. "/dev/ttyUSB0"
+          setSelect("baudrate", settings.baudrate);      // 9600, 19200, ...
+          setInput("slaveid", settings.slaveid);         // number
+          setInput("bytesize", settings.bytesize);       // number
+          setSelect("parity", settings.parity, settings.parity); // N/E/O
+          setInput("stopbits", settings.stopbits);       // number
+          setInput("timeout", settings.timeout);         // number (seconds)
+
+        } catch (err) {
+          console.error("Failed to load settings:", err);
+        }
+      }
+
+      // auto-run on page load
+      document.addEventListener("DOMContentLoaded", getsettings);
+
       // Mobile Edits
       if(window.innerWidth <= 600){
         const timeDiv = document.querySelector(".datetime");
@@ -629,17 +731,78 @@
       // End Mobile Edits
 
       // Settings Toggle
-      // const settingsBtn = document.getElementById("settings");
+      const settingsBtn = document.getElementById("settings");
       const settingsDiv = document.getElementById("settingsDiv");
+      const serialDiv = document.getElementById("serialDiv")
+      const viewDiv = document.getElementById("viewDiv")
       settingsDiv.style.display = "none";
-      // settingsBtn.addEventListener("click",()=>{
-      //   if(settingsDiv.style.display === "none"){
-      //     settingsDiv.style.display = "flex";
-      //   } else {
-      //     settingsDiv.style.display = "none";
-      //   }
-      // });
+      serialDiv.style.display = 'none'
+      settingsBtn.addEventListener("click",()=>{
+        if(settingsDiv.style.display === "none"){
+          settingsDiv.style.display = "flex";
+          serialDiv.style.display = 'flex';
+
+        } else {
+          settingsDiv.style.display = "none";
+          serialDiv.style.display = 'none'
+        }
+      });
       // End Settings Toggle
+
+      function cancelFunc(){
+        settingsBtn.click()
+      }
+
+      async function saveSerialSettings() {
+        // Read all values
+        const settings = {
+          port:      document.getElementById("port").value.trim(),
+          baudrate:  document.getElementById("baudrate").value.trim(),
+          slaveid:   document.getElementById("slaveid").value.trim(),
+          bytesize:  document.getElementById("bytesize").value.trim(),
+          parity:    document.getElementById("parity").value.trim(),
+          stopbits:  document.getElementById("stopbits").value.trim(),
+          timeout:   document.getElementById("timeout").value.trim()
+        };
+
+        // ✅ Check for empty fields
+        for (const [key, value] of Object.entries(settings)) {
+          if (value === "" || value === null || value === undefined) {
+            console.warn(`⚠️ Field "${key}" is empty — not sending`);
+            return; // ❌ Stop function if any field empty
+          }
+        }
+
+        try {
+          // ✅ Send to Flask backend
+          const res = await fetch("/saveserial", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(settings)
+          });
+
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
+
+          const reply = await res.json();
+          if(reply.msg === 'Saved'){
+            console.log("✅ Server response:", reply);
+
+            alert("✅ Serial settings saved successfully!");
+          }else{
+            console.log("Server response:", reply);
+            alert("⚠️ Failed to save serial settings.");
+          }
+         
+        } catch (err) {
+          console.error("❌ Error sending serial settings:", err);
+          alert("⚠️ Failed to save serial settings.");
+        }
+      }
+      //  saving serial date
+      const saveSerial = document.getElementById('saveSerial')
+      saveSerial.addEventListener('click',saveSerialSettings)
 
       // Reports Toggle
       const reportsBtn = document.getElementById("reportsBtn");
@@ -652,7 +815,6 @@
           reportsDiv.style.display = "none";
         }
       });
-
     
       // Jump to Reports when clicking the header reports icon
       (function(){

@@ -1,4 +1,4 @@
-from flask import Flask,render_template,send_file,request
+from flask import Flask,render_template,send_file,request,jsonify
 from flask_socketio import SocketIO, emit
 import psycopg2
 from dotenv import load_dotenv
@@ -222,6 +222,7 @@ def to_excel_naive(dt: datetime, zone: ZoneInfo = ISTANBUL) -> datetime:
 
 @app.route("/")
 def main():
+    
     res = requests.get("https://devgadbadr.com/scadapiauth/auth")
     try:
         resJson = res.json()
@@ -232,6 +233,38 @@ def main():
             return 'You App is Disabled, Contact Developer Gad Badr'
     except:
         return 'You App is Disabled, Contact Developer Gad Badr'
+    
+@app.route("/getsettings")
+def getsettings():
+    cursor.execute("SELECT * FROM settings")
+    row = cursor.fetchone()
+    colnames = [desc[0] for desc in cursor.description]
+    settings = dict(zip(colnames, row))
+    return jsonify({"settings":settings})
+
+
+@app.route("/saveserial",methods=["POST"])
+def saveserial():
+    data = request.get_json()
+    # --- Validation ---
+    required_fields = ["port", "baudrate", "slaveid", "bytesize", "parity", "stopbits", "timeout"]
+    for field in required_fields:
+        if field not in data or data[field] == "" or data[field] is None:
+            return jsonify({"error": f"Missing field: {field}"}), 400
+    params = (data['baudrate'],data['port'],data['slaveid'],data['bytesize'],data['parity'],data['stopbits'],data['timeout'])
+    query = """
+            UPDATE settings
+            SET baudrate = %s,
+                port = %s,
+                slaveid = %s,
+                bytesize = %s,
+                parity = %s,
+                stopbits = %s,
+                timeout = %s
+            WHERE id = 1
+            """
+    cursor.execute(query, params)
+    return jsonify({"msg":"Saved"})
 
 @app.route("/downloadlog",methods=["POST"])
 def donwload_log():
@@ -266,6 +299,7 @@ def donwload_log():
     # Collect all JSON keys across all rows
     all_keys = []
     seen = set()
+    seen.add('genhours')
     for r in data:
         payload = r[1]
         if isinstance(payload, str):
@@ -275,7 +309,7 @@ def donwload_log():
                 if k not in seen:
                     seen.add(k)
                     all_keys.append(k)
-
+    print(all_keys)
     # Build workbook
     wb = Workbook()
     ws = wb.active
@@ -302,6 +336,12 @@ def donwload_log():
                         v = float(v)
                 except Exception:
                     pass
+            if 'gen' in k:
+                if isinstance(v,int):
+                    if v:
+                        v= 0
+                    else:
+                        v = 1
             row.append(v)
         ws.append(row)
 
