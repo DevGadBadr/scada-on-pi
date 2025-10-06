@@ -424,6 +424,8 @@
           const gen1State = payload['gen1']
           const gen2State = payload['gen2']
           const gen3State = payload['gen3']
+
+          console.log(gen1State,gen2State,gen3State)
         
           if(!gen1State){
             const gen = document.getElementById('generator1')
@@ -485,7 +487,6 @@
               }
             });
           });
-          console.log(categories);
           Object.entries(categories).forEach(([cat, keys]) => {
             if(keys.length>0){
               // Create Category Div
