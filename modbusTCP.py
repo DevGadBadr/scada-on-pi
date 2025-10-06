@@ -65,8 +65,8 @@ async def main():
     storeConnection: asyncpg.Connection = await asyncpg.connect(
         host="localhost",
         port="5432",
-        database="tpmdb",
-        password="scadaonpi",
+        database=os.getenv("DB_NAME_LOCAL"),
+        password=os.getenv("DB_PASSWORD_LOCAL"),
         user="devgadbadr"
     )
     # Set them as input with internal pull-up resistors

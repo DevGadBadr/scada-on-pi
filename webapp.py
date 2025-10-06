@@ -24,8 +24,8 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 connection = psycopg2.connect(
     host="localhost",
     port="5432",
-    database="tpmdb",
-    password="scadaonpi",
+    database=os.getenv("DB_NAME_LOCAL"),
+    password=os.getenv("DB_PASSWORD_LOCAL"),
     user="devgadbadr"
 )
 connection.autocommit = True
